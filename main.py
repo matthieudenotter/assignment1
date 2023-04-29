@@ -1,3 +1,22 @@
+def similarity(set_1, set_2, outfile):
+    """
+    Creates outfile with value mean list similarity between corresponding lists in two sets
+    """
+    set1 = read_data_from_file(set_1)
+    set2 = read_data_from_file(set_2)
+    if ((set_length := len(set1)) != len(set2)):
+        print('Error: number of sets has to be equal in each file!')
+    
+    list_similarity = 0
+    # iterate list symetric similarities between all corresponding lists in sets (i.e. first lists in sets, second lists etc....)
+    for i in range(len(set1)):
+        list_similarity += list_similarity_symetric(set1[i], set2[i])
+    # write result to outfile
+    outf = open(outfile, 'w')
+    outf.write("{:.2f}".format(list_similarity/set_length))
+    outf.close()
+    return True
+
 def read_data_from_file(filename):
     """ 
     Reads from .txt file with lists of intervals, seperated by newlines
@@ -20,23 +39,12 @@ def read_data_from_file(filename):
             lists[i][j] = [ int(x) for x in lists[i][j]] # convert all characters to integers
     return(lists)
 
-def similarity(set1, set2):
-    """
-    Returns mean list similarity between corresponding lists in two sets
-    """
-    set_length = len(set1)
-    list_similarity = 0
-    for i in range(len(set1)):
-        list_similarity += list_similarity_symetric(set1[i], set2[i])
-    return list_similarity/set_length
-
 def list_similarity_symetric(list1,list2):
     """
     Returns symetric similarity between two lists by averaging the LS12 and LS21
     """
     similarity_forward = list_similarity(list1,list2)
     similarity_backward = list_similarity(list2,list1)
-    print("LS12: {:3.2f}   LS21: {:3.2f}".format(similarity_forward, similarity_backward))
     return (similarity_forward+similarity_backward)/2
 
 def list_similarity(list1, list2):
@@ -63,8 +71,10 @@ def overlap(interval, list):
     while index_interval <= interval[1] and not overlap:
         # iterate all values in interval. If overlap found exit loop
         index_list = 0 # start with first interval in list
-        while index_list < list_length and not overlap:
-            # loop over all intervals in list. If overlap found exit loop
+        while index_list < list_length and not overlap and index_interval[1]>list[index_list][0]:
+            # loop over all intervals in list. If overlap found exit loop. 
+            # third condition: exit loop if interval end < start value of interval from list
+            # only possible if intervals are sorted => reduce order n^2
             index_list_interval = list[index_list][0] # start with start value from interval
             while index_list_interval <= list[index_list][1] and not overlap:
                 # loop over all values in interval. If overlap found exit loop
@@ -74,12 +84,3 @@ def overlap(interval, list):
             index_list += 1
         index_interval += 1
     return overlap
-
-# Main Code
-set_of_lists1 = read_data_from_file('sample_set1.txt')
-set_of_lists2 = read_data_from_file('sample_set2.txt')
-
-if ((set_length := len(set_of_lists1)) != len(set_of_lists2)):
-    print('Error: number of sets has to be equal in each file!')
-else: 
-    print("Mean similarity in set: {:3.2f}".format(similarity(set_of_lists1, set_of_lists2)))
