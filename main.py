@@ -86,8 +86,8 @@ def overlap(interval, list):
     algorithm
     ---------
     For each interval in list, calculate the sum of the spans of the intervals. If this sum is larger or equals than the joint interval span, there must be an overlap
-    eg: [1,2] and [3,4]. Joint interval: [1:4]. 1+1 < 3 so no overlap
-    eg: [1,2] and [2,4]. Joint interval: [1:4]. 1+2 >= 3  overlap
+    eg: [1,2] and [3,4]. Joint interval: [1:4]. (2-1)+(4-3)) < (4-3) so no overlap
+    eg: [1,2] and [2,4]. Joint interval: [1:4]. 1+2 >= 3 overlap
     eg: [5,10] and [6,7]. Joint interval: [5:10]. 5+2 >= 5 so overlap
     eg: [1,2] and [8,9]. Joint interval: [1:9]. 1+1 < 8 so no overlap
     """
