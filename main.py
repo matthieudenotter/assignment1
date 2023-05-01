@@ -1,52 +1,55 @@
 def similarity(set_1, set_2, outfile):
     """
     Calculates list similarities between corresponding lists in set of lists 
+        parameters
+        ----------
+        set_1, set_2: text files with lines, containing a set of intervals [x1,y1],[x2,y2]...[xn,yn]
     
-    parameters
-    ----------
-    set_1, set_2: text files with lines, containing a set of intervals [x1,y1],[x2,y2]...[xn,yn]
-    
-    output
-    ------
-    outfile with value mean list similarity between corresponding lists in two sets parameters
-    
+        output
+        ------
+        outfile with value mean list similarity between corresponding lists in two sets parameters
     """
-    set1 = read_data_from_file(set_1)
-    set2 = read_data_from_file(set_2)
-    if ((set_length := len(set1)) != len(set2)):
-        print('Error: number of sets has to be equal in each file!')
-    
-    list_similarity = 0
-    # iterate list symetric similarities between all corresponding lists in sets (i.e. first lists in sets, second lists etc....)
-    for i in range(len(set1)):
-        list_similarity += list_similarity_symetric(set1[i], set2[i])
-    # write result to outfile
-    outf = open(outfile, 'w')
-    outf.write("{:.2f}".format(list_similarity/set_length))
-    outf.close()
-    return True
+    if (set1 := read_data_from_file(set_1)) and (set2 := read_data_from_file(set_2)):
+        if ((set_length := len(set1)) != len(set2)):
+            print('Error: number of sets has to be equal in each file!')
+        
+        list_similarity = 0
+        # iterate list symetric similarities between all corresponding lists in sets (i.e. first lists in sets, second lists etc....)
+        for i in range(len(set1)):
+            list_similarity += list_similarity_symetric(set1[i], set2[i])
+        # write result to outfile
+        outf = open(outfile, 'w')
+        outf.write("{:.2f}".format(list_similarity/set_length))
+        outf.close()
+        return True
+    else:
+        print("No files could not be read")
 
 def read_data_from_file(filename):
     """ 
     Reads from .txt file with lists of intervals, seperated by newlines
     Returns a set of lists containing lists with two integers (start and end of interval)
     """
-    txt = open(filename)
-    data = txt.read()
-    txt.close()
-    lines = data.split('\n')
-    set_length = len(lines)
-    lists = [[]*set_length]*set_length
-    # iterate all lines in set
-    for i in range(set_length):
-        lines[i] = lines[i].replace("],[","]$[") # introduce seperation character $ between intervals
-        lines[i] = lines[i].replace("]",""); lines[i] = lines[i].replace("[","") # remove unnecessary brackets
-        lists[i] = lines[i].split("$") # split on new split character
-        # iterate all sets
-        for j in range(len(lists[i])):
-            lists[i][j] = lists[i][j].split(",") # split on comma
-            lists[i][j] = [ int(x) for x in lists[i][j]] # convert all characters to integers
-    return(lists)
+    try: 
+        txt = open(filename)
+        data = txt.read()
+        txt.close()
+        lines = data.split('\n')
+        set_length = len(lines)
+        lists = [[]*set_length]*set_length
+        # iterate all lines in set
+        for i in range(set_length):
+            lines[i] = lines[i].replace("],[","]$[") # introduce seperation character $ between intervals
+            lines[i] = lines[i].replace("]",""); lines[i] = lines[i].replace("[","") # remove unnecessary brackets
+            lists[i] = lines[i].split("$") # split on new split character
+            # iterate all sets
+            for j in range(len(lists[i])):
+                lists[i][j] = lists[i][j].split(",") # split on comma
+                lists[i][j] = [ int(x) for x in lists[i][j]] # convert all characters to integers
+        return(lists)
+    except: 
+        print(filename, "not in folder")
+        return False
 
 def list_similarity_symetric(list1,list2):
     """
