@@ -1,6 +1,15 @@
 def similarity(set_1, set_2, outfile):
     """
-    Creates outfile with value mean list similarity between corresponding lists in two sets
+    Calculates list similarities between corresponding lists in set of lists 
+    
+    parameters
+    ----------
+    set_1, set_2: text files with lines, containing a set of intervals [x1,y1],[x2,y2]...[xn,yn]
+    
+    output
+    ------
+    outfile with value mean list similarity between corresponding lists in two sets parameters
+    
     """
     set1 = read_data_from_file(set_1)
     set2 = read_data_from_file(set_2)
@@ -71,7 +80,7 @@ def overlap(interval, list):
     while index_interval <= interval[1] and not overlap:
         # iterate all values in interval. If overlap found exit loop
         index_list = 0 # start with first interval in list
-        while index_list < list_length and not overlap and index_interval[1]>list[index_list][0]:
+        while index_list < list_length and not overlap and index_interval>list[index_list][0]:
             # loop over all intervals in list. If overlap found exit loop. 
             # third condition: exit loop if interval end < start value of interval from list
             # only possible if intervals are sorted => reduce order n^2
