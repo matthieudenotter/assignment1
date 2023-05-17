@@ -1,3 +1,5 @@
+# CODE BY MATTHIEU DEN OTTER (0333626)
+
 def similarity(set_1, set_2, outfile):
     """
     Calculates list similarities between corresponding lists in set of lists 
